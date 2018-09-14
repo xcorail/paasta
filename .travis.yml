@@ -16,9 +16,9 @@ before_cache:
   # For some reason (because we build the manpages toxenv inside docker, maybe?), caching .tox/manpages leads to failing itest_% builds.
   - rm -rf .tox/manpages
 python:
-  - "3.6"
+  - "3.7"
 env:
-  - TOXENV=py36,coverage,docs,mypy
+  - TOXENV=py37,coverage,docs,mypy
   - TOXENV=general_itests
   - TOXENV=paasta_itests
   - TOXENV=example_cluster
