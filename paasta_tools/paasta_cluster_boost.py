@@ -27,6 +27,11 @@ def parse_args():
     """Parses the command line arguments passed to this script"""
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        '-c', '--cluster',
+        type=str,
+        help="Name of the cluster you want to increase the capacity",
+    )
+    parser.add_argument(
         '-p', '--pool',
         type=str,
         default='default',
@@ -101,6 +106,7 @@ def paasta_cluster_boost():
         logging.basicConfig(level=logging.WARNING)
 
     action = args.action
+    cluster = args.cluster
     pool = args.pool
 
     if not system_config.get_cluster_boost_enabled():
@@ -117,6 +123,7 @@ def paasta_cluster_boost():
         if action == 'set':
             if not cluster_boost.set_boost_factor(
                 region=region,
+                cluster=cluster,
                 pool=pool,
                 factor=args.boost,
                 duration_minutes=args.duration,

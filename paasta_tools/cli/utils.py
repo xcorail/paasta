@@ -612,6 +612,7 @@ def execute_paasta_metastatus_on_remote_master(
 def run_paasta_cluster_boost(
     master,
     action,
+    cluster,
     pool,
     duration,
     override,
@@ -626,6 +627,7 @@ def run_paasta_cluster_boost(
     else:
         verbose_flag = None
 
+    cluster_flag = f'--cluster {cluster}'
     pool_flag = f'--pool {pool}'
     duration_flag = f'--duration {duration}' if duration is not None else ''
     boost_flag = f'--boost {boost}' if boost is not None else ''
@@ -635,6 +637,7 @@ def run_paasta_cluster_boost(
         filter(
             None, [
                 action,
+                cluster_flag,
                 pool_flag,
                 duration_flag,
                 boost_flag,

@@ -13,6 +13,7 @@ from collections import namedtuple
 from datetime import datetime
 from time import time as get_time
 
+import staticconf
 from kazoo.client import KazooClient
 from kazoo.exceptions import NoNodeError
 try:
@@ -143,6 +144,7 @@ def get_boost_values(
 
 def set_boost_factor(
     region: str,
+    cluster: str,
     pool: str,
     factor=DEFAULT_BOOST_FACTOR,
     duration_minutes=DEFAULT_BOOST_DURATION,
@@ -173,10 +175,12 @@ def set_boost_factor(
     if clusterman_metrics:
         metrics_client = clusterman_metrics.ClustermanMetricsBotoClient(region_name=region, app_identifier='default')
         with metrics_client.get_writer(clusterman_metrics.APP_METRICS) as writer:
-            writer.send(('boost_factor', current_time, factor))
+            metrics_key = clusterman_metrics.generate_key_from_dimensions('boost_factor', {'cluster': cluster, 'pool': pool})
+            writer.send((metric_key, current_time, factor))
             if duration_minutes > 0:
-                writer.send(('boost_factor', end_time, 1.0))
+                writer.send((metric_key, end_time, 1.0))
 
+    print(current_time, end_time)
     zk_end_time_path = zk_boost_path + '/end_time'
     zk_factor_path = zk_boost_path + '/factor'
     zk_expected_load_path = zk_boost_path + '/expected_load'
